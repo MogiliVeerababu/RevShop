@@ -25,6 +25,20 @@ public class Seller extends User {
     public String getTaxId() { return taxId; }
     public void setTaxId(String taxId) { this.taxId = taxId; }
 
+    // ✅ SECURITY FIELDS GETTERS/SETTERS
+    public int getSecurityQuestion() {
+        return super.getSecurityQuestion();
+    }
+    public void setSecurityQuestion(int securityQuestion) {
+        super.setSecurityQuestion(securityQuestion);
+    }
+    public String getSecurityAnswer() {
+        return super.getSecurityAnswer();
+    }
+    public void setSecurityAnswer(String securityAnswer) {
+        super.setSecurityAnswer(securityAnswer);
+    }
+
     @Override
     public String toString() {
         return "Seller [userId=" + getUserId() + ", username=" + getUsername() +

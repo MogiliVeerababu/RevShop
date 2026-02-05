@@ -33,8 +33,8 @@ public class SellerMenu {
     }
 
     public void show(Seller seller) {
-        System.out.println(ConsoleColors.GREEN +
-                "\nWelcome, " + seller.getBusinessName() + "!" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.PURPLE_BOLD +
+                "\nWelcome, " + seller.getUsername() +"!" + ConsoleColors.RESET);
 
         while (true) {
             System.out.println(ConsoleColors.CYAN_BOLD +

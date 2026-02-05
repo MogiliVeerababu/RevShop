@@ -20,8 +20,8 @@ public class MainApplication {
             System.err.println("Application error: " + e.getMessage());
             e.printStackTrace();
         } finally {
-            System.out.println(ConsoleColors.GREEN +
-                    "\nThank you for using RevShop! Goodbye!" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.PURPLE +
+                    "\nThank you for using RevShop! Visit Again" + ConsoleColors.RESET);
         }
     }
 }

@@ -28,6 +28,10 @@ public class SellerDAO extends BaseDAO {
                 seller.setEmail(rs.getString("email"));
                 seller.setPasswordHash(rs.getString("password_hash"));
                 seller.setRole(rs.getString("role"));
+                // ✅ ADD THESE 2 LINES:
+                seller.setSecurityQuestion(rs.getInt("security_question"));
+                seller.setSecurityAnswer(rs.getString("security_answer"));
+
                 seller.setBusinessName(rs.getString("business_name"));
                 seller.setBusinessAddress(rs.getString("business_address"));
                 seller.setBusinessPhone(rs.getString("business_phone"));
