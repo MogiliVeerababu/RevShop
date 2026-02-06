@@ -1,0 +1,71 @@
+2026-02-03 21:58:07 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-03 21:58:07 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-03 21:58:08 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-03 21:58:08 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-03 21:58:08 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-03 22:05:37 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-03 22:05:37 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-03 22:05:38 [main] INFO  com.revshop.util.DatabaseUtil - Database connection test: SUCCESS
+2026-02-03 22:05:38 [main] INFO  com.revshop.MainApplication - Starting main menu...
+2026-02-03 22:06:30 [Thread-0] INFO  com.revshop.MainApplication - Shutdown hook triggered
+2026-02-03 22:06:30 [Thread-0] INFO  com.revshop.MainApplication - Application shutdown complete
+2026-02-03 22:06:33 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-03 22:06:33 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-03 22:06:33 [main] INFO  com.revshop.util.DatabaseUtil - Database connection test: SUCCESS
+2026-02-03 22:06:33 [main] INFO  com.revshop.MainApplication - Starting main menu...
+2026-02-03 22:11:48 [Thread-0] INFO  com.revshop.MainApplication - Shutdown hook triggered
+2026-02-03 22:11:48 [Thread-0] INFO  com.revshop.MainApplication - Application shutdown complete
+2026-02-04 14:50:15 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-04 14:50:15 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-04 14:50:16 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-04 14:52:19 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-04 14:52:19 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-04 14:52:19 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-04 14:52:51 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-04 14:52:51 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-04 14:53:08 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-04 14:53:42 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-04 14:53:42 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-04 14:53:51 [main] INFO  com.revshop.util.DatabaseUtil - Database connection established successfully
+2026-02-04 14:57:51 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-04 14:57:51 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-04 15:09:20 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-04 15:09:20 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-04 15:45:32 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-04 15:45:32 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-04 16:21:03 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-04 16:21:03 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-04 16:29:54 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-04 16:29:54 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-04 16:48:28 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-04 16:48:28 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-04 16:53:25 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-04 16:53:25 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-04 19:25:21 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-04 19:25:21 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-04 19:36:50 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-04 19:36:50 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-05 09:05:38 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-05 09:05:38 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-05 09:33:35 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-05 09:33:35 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-05 10:03:18 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-05 10:03:18 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-05 10:16:42 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-05 10:16:42 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-05 10:17:42 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-05 10:17:42 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-05 13:06:01 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-05 13:06:01 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-05 14:20:33 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-05 14:20:33 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-05 15:20:40 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-05 15:20:40 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-05 15:33:04 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-05 15:33:04 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-05 19:44:28 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-05 19:44:28 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-05 22:19:13 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-05 22:19:13 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
+2026-02-06 11:28:15 [main] INFO  com.revshop.config.LoggerConfig - Logging system initialized successfully
+2026-02-06 11:28:15 [main] DEBUG com.revshop.config.LoggerConfig - Log file location: C:\Users\hp\IdeaProjects\revshop\logs\revshop.log
