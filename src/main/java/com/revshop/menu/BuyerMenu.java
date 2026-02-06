@@ -14,6 +14,7 @@ import com.revshop.service.ProductService;
 import com.revshop.service.AuthService;
 import com.revshop.util.ConsoleColors;
 import com.revshop.util.ValidationUtil;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -52,10 +53,12 @@ public class BuyerMenu {
             System.out.println("2. Search Products");
             System.out.println("3. View Cart");
             System.out.println("4. View Orders");
-            System.out.println("5. View Notifications");
-            System.out.println("6. View Profile");
-            System.out.println("7. Change Password");
-            System.out.println("8. Logout");
+            System.out.println("5. View Favorites");  // NEW OPTION
+            System.out.println("6. View Notifications");  // Renumbered from 5
+            System.out.println("7. View Profile");  // Renumbered from 6
+            System.out.println("8. Change Password");  // Renumbered from 7
+            System.out.println("9. Logout");  // Renumbered from 8
+
             System.out.print("Choose an option: " + ConsoleColors.RESET);
 
             int choice = getIntInput();
@@ -73,16 +76,19 @@ public class BuyerMenu {
                 case 4:
                     viewOrders(buyer);
                     break;
-                case 5:
+                case 5:  // NEW CASE FOR FAVORITES
+                    viewFavorites(buyer);
+                    break;
+                case 6:  // Renumbered from 5
                     viewNotifications(buyer);
                     break;
-                case 6:
+                case 7:  // Renumbered from 6
                     viewProfile(buyer);
                     break;
-                case 7:
+                case 8:  // Renumbered from 7
                     changePassword(buyer);
                     break;
-                case 8:
+                case 9:  // Renumbered from 8
                     System.out.println(ConsoleColors.YELLOW +
                             "Logging out..." + ConsoleColors.RESET);
                     return;
@@ -230,11 +236,22 @@ public class BuyerMenu {
             double avgRating = buyerService.getAverageRating(product.getProductId());
             System.out.println("Rating: " + String.format("%.1f", avgRating) + "/5");
 
+            // Check if already in favorites
+            boolean isFavorite = buyerService.isProductInFavorites(buyer.getUserId(), product.getProductId());
+            if (isFavorite) {
+                System.out.println(ConsoleColors.YELLOW + "★ Already in your favorites!" + ConsoleColors.RESET);
+            }
+
             System.out.println("\nOptions:");
             System.out.println("1. Add to Cart");
             System.out.println("2. View Reviews");
             System.out.println("3. Add Review");
-            System.out.println("4. Back");
+            if (isFavorite) {
+                System.out.println("4. Remove from Favorites");
+            } else {
+                System.out.println("4. Add to Favorites");
+            }
+            System.out.println("5. Back");
             System.out.print("Choose: ");
 
             int choice = getIntInput();
@@ -250,6 +267,17 @@ public class BuyerMenu {
                     addProductReview(product.getProductId(), buyer.getUserId());
                     break;
                 case 4:
+                    if (isFavorite) {
+                        removeFromFavorites(buyer.getUserId(), product.getProductId());
+                        System.out.println(ConsoleColors.GREEN + "✓ Removed from favorites!" + ConsoleColors.RESET);
+                    } else {
+                        addToFavorites(buyer.getUserId(), product.getProductId());
+                        System.out.println(ConsoleColors.GREEN + "✓ Added to favorites!" + ConsoleColors.RESET);
+                    }
+                    // Refresh favorite status
+                    isFavorite = !isFavorite;
+                    break;
+                case 5:
                     return;
                 default:
                     System.out.println(ConsoleColors.RED + "Invalid choice!" + ConsoleColors.RESET);
@@ -759,5 +787,117 @@ public class BuyerMenu {
             }
         }
     }
+    // ============ FAVORITE METHODS ============ //
 
+    private void viewFavorites(Buyer buyer) {
+        System.out.println(ConsoleColors.BLUE_BOLD +
+                "\n=== MY FAVORITE PRODUCTS ===" + ConsoleColors.RESET);
+
+        try {
+            List<Product> favorites = buyerService.getFavorites(buyer.getUserId());
+
+            if (favorites.isEmpty()) {
+                System.out.println("You have no favorite products yet.");
+                System.out.println("Browse products and add them to favorites!");
+                return;
+            }
+
+            System.out.println("You have " + favorites.size() + " favorite product(s):");
+            displayProducts(favorites);
+
+            System.out.println("\nEnter product ID to view details (0 to go back): ");
+            int productId = getIntInput();
+
+            if (productId > 0) {
+                // Check if product is in favorites
+                if (buyerService.isProductInFavorites(buyer.getUserId(), productId)) {
+                    Product product = productService.getProductById(productId);
+                    if (product != null) {
+                        viewFavoriteProductDetails(product, buyer);
+                    } else {
+                        System.out.println(ConsoleColors.RED + "Product not found!" + ConsoleColors.RESET);
+                    }
+                } else {
+                    System.out.println(ConsoleColors.RED + "Product not in your favorites!" + ConsoleColors.RESET);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(ConsoleColors.RED + "Error: " + e.getMessage() + ConsoleColors.RESET);
+        }
+    }
+
+    private void viewFavoriteProductDetails(Product product, Buyer buyer) {
+        while (true) {
+            System.out.println(ConsoleColors.BLUE_BOLD +
+                    "\n=== FAVORITE PRODUCT DETAILS ===" + ConsoleColors.RESET);
+
+            System.out.println("ID: " + product.getProductId());
+            System.out.println("Name: " + product.getName());
+            System.out.println("Description: " + product.getDescription());
+            System.out.println("Price: $" + String.format("%.2f", product.getPrice()));
+            System.out.println("MRP: $" + String.format("%.2f", product.getMrp()));
+            System.out.println("Discount: " + String.format("%.1f", product.getDiscountPercentage()) + "%");
+            System.out.println("Stock: " + product.getStockQuantity());
+            System.out.println("Category: " + product.getCategory());
+
+            double avgRating = buyerService.getAverageRating(product.getProductId());
+            System.out.println("Rating: " + String.format("%.1f", avgRating) + "/5");
+
+            System.out.println("\nOptions:");
+            System.out.println("1. Add to Cart");
+            System.out.println("2. View Reviews");
+            System.out.println("3. Add Review");
+            System.out.println("4. Remove from Favorites");
+            System.out.println("5. Back to Favorites List");
+            System.out.print("Choose: ");
+
+            int choice = getIntInput();
+
+            switch (choice) {
+                case 1:
+                    addToCart(product, buyer);
+                    break;
+                case 2:
+                    viewProductReviews(product.getProductId());
+                    break;
+                case 3:
+                    addProductReview(product.getProductId(), buyer.getUserId());
+                    break;
+                case 4:
+                    removeFromFavorites(buyer.getUserId(), product.getProductId());
+                    System.out.println(ConsoleColors.GREEN + "✓ Removed from favorites!" + ConsoleColors.RESET);
+                    return; // Go back to favorites list
+                case 5:
+                    return;
+                default:
+                    System.out.println(ConsoleColors.RED + "Invalid choice!" + ConsoleColors.RESET);
+            }
+        }
+    }
+
+    private void addToFavorites(int userId, int productId) {
+        try {
+            boolean success = buyerService.addToFavorites(userId, productId);
+            if (success) {
+                System.out.println(ConsoleColors.GREEN + "✓ Added to favorites!" + ConsoleColors.RESET);
+            } else {
+                System.out.println(ConsoleColors.YELLOW + "Already in favorites!" + ConsoleColors.RESET);
+            }
+        } catch (Exception e) {
+            System.out.println(ConsoleColors.RED + "Error: " + e.getMessage() + ConsoleColors.RESET);
+        }
+    }
+
+    private void removeFromFavorites(int userId, int productId) {
+        try {
+            boolean success = buyerService.removeFromFavorites(userId, productId);
+            if (success) {
+                System.out.println(ConsoleColors.GREEN + "✓ Removed from favorites!" + ConsoleColors.RESET);
+            } else {
+                System.out.println(ConsoleColors.RED + "Failed to remove from favorites!" + ConsoleColors.RESET);
+            }
+        } catch (Exception e) {
+            System.out.println(ConsoleColors.RED + "Error: " + e.getMessage() + ConsoleColors.RESET);
+        }
+    }
 }
