@@ -11,6 +11,10 @@ public class Review {
     private String username;
     private Timestamp createdAt;
 
+    // NEW FIELDS ADDED BELOW - KEEP ALL EXISTING CODE ABOVE
+    private String productName;  // To show product name in seller view
+    private int orderId;         // To link review with order
+
     public Review() {}
 
     public Review(int productId, int userId, int rating, String comment) {
@@ -41,6 +45,23 @@ public class Review {
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
+    // NEW GETTERS AND SETTERS ADDED BELOW
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
 
     @Override
     public String toString() {

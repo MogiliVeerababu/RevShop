@@ -154,5 +154,32 @@ INSERT INTO sellers (seller_id, business_name, business_address, business_phone)
 INSERT INTO products (name, description, price, mrp, stock_quantity, category, seller_id) VALUES
                                                                                               ('Smartphone X', 'Latest smartphone with amazing features', 699.99, 799.99, 50, 'Electronics', 3),
                                                                                               ('Wireless Headphones', 'Noise cancelling wireless headphones', 199.99, 249.99, 100, 'Electronics', 3),
-                                                                                              ('Cotton T-Shirt', '100% cotton premium t-shirt', 24.99, 29.99, 200, 'Clothing', 4),
+                                                                                           ('Cotton T-Shirt', '100% cotton premium t-shirt', 24.99, 29.99, 200, 'Clothing', 4),
                                                                                               ('Denim Jeans', 'Classic blue denim jeans', 49.99, 59.99, 150, 'Clothing', 4);
+
+-- ============================================
+-- REVIEW SYSTEM ENHANCEMENTS
+-- ============================================
+
+-- Add reviewed flag to order_items table
+ALTER TABLE order_items ADD COLUMN reviewed BOOLEAN DEFAULT FALSE;
+
+-- Add order_id to reviews table to link reviews with orders
+ALTER TABLE reviews ADD COLUMN order_id INT;
+ALTER TABLE reviews ADD FOREIGN KEY (order_id) REFERENCES orders(order_id);
+
+-- Add average_rating to products for quick access
+ALTER TABLE products ADD COLUMN average_rating DECIMAL(3,2) DEFAULT 0.00;
+
+-- Update existing reviews to have order_id (run once)
+-- Note: This assumes all existing reviews are for delivered orders
+-- If not, you may need to adjust the query
+UPDATE reviews r
+    JOIN order_items oi ON r.product_id = oi.product_id AND r.user_id = (
+        SELECT user_id FROM orders WHERE order_id = oi.order_id
+    )
+    JOIN orders o ON oi.order_id = o.order_id
+SET r.order_id = oi.order_id
+WHERE o.status = 'delivered'
+  AND r.order_id IS NULL;
+

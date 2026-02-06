@@ -14,6 +14,9 @@ import com.revshop.util.ConsoleColors;
 import com.revshop.util.ValidationUtil;
 import java.util.List;
 import java.util.Scanner;
+import com.revshop.service.ReviewService;
+import com.revshop.model.Review;
+
 
 public class SellerMenu {
     private Scanner scanner;
@@ -22,6 +25,7 @@ public class SellerMenu {
     private OrderService orderService;
     private AuthService authService;
     private NotificationService notificationService;
+    private ReviewService reviewService;
 
     public SellerMenu() {
         scanner = new Scanner(System.in);
@@ -30,6 +34,7 @@ public class SellerMenu {
         orderService = new OrderService();
         authService = new AuthService();
         notificationService = new NotificationService();
+        reviewService = new ReviewService();
     }
 
     public void show(Seller seller) {
@@ -41,10 +46,11 @@ public class SellerMenu {
                     "\n=== SELLER DASHBOARD ===");
             System.out.println("1. Manage Products");
             System.out.println("2. View Orders");
-            System.out.println("3. View Low Stock Products");
-            System.out.println("4. View Profile");
-            System.out.println("5. Change Password");
-            System.out.println("6. Logout");
+            System.out.println("3. View Product Reviews");  // CHANGED
+            System.out.println("4. View Low Stock Products");  // MOVED TO 4
+            System.out.println("5. View Profile");  // MOVED TO 5
+            System.out.println("6. Change Password");  // MOVED TO 6
+            System.out.println("7. Logout");  // MOVED TO 7
             System.out.print("Choose an option: " + ConsoleColors.RESET);
 
             int choice = getIntInput();
@@ -57,15 +63,18 @@ public class SellerMenu {
                     viewOrders(seller);
                     break;
                 case 3:
-                    viewLowStockProducts(seller);
+                    viewProductReviews(seller);  // NEW METHOD CALL
                     break;
                 case 4:
-                    viewProfile(seller);
+                    viewLowStockProducts(seller);
                     break;
                 case 5:
-                    changePassword(seller);
+                    viewProfile(seller);
                     break;
                 case 6:
+                    changePassword(seller);
+                    break;
+                case 7:
                     System.out.println(ConsoleColors.YELLOW +
                             "Logging out..." + ConsoleColors.RESET);
                     return;
@@ -339,18 +348,129 @@ public class SellerMenu {
             }
         }
 
-        if (order.getStatus().equals("pending") || order.getStatus().equals("confirmed")) {
+        if (order.getStatus().equals("pending") || order.getStatus().equals("confirmed") || order.getStatus().equals("shipped")) {
             System.out.println("\nOptions:");
-            System.out.println("1. Update Order Status");
+
+            // Show different options based on current status
+            if (order.getStatus().equals("shipped")) {
+                System.out.println("1. Mark as Delivered");
+            } else {
+                System.out.println("1. Update Order Status");
+            }
             System.out.println("2. Back");
+
             System.out.print("Choose: ");
 
             int choice = getIntInput();
 
             if (choice == 1) {
-                updateOrderStatus(orderId);
+                if (order.getStatus().equals("shipped")) {
+                    // Directly mark as delivered for shipped orders
+                    boolean success = orderService.updateOrderStatus(orderId, "delivered");
+                    if (success) {
+                        System.out.println(ConsoleColors.GREEN +
+                                "✅ Order marked as delivered!" + ConsoleColors.RESET);
+                    } else {
+                        System.out.println(ConsoleColors.RED + "Failed to update order status!" + ConsoleColors.RESET);
+                    }
+                } else {
+                    // For pending/confirmed, show full menu
+                    updateOrderStatus(orderId);
+                }
             }
         }
+    }
+    private void viewProductReviews(Seller seller) {
+        System.out.println(ConsoleColors.BLUE_BOLD +
+                "\n=== PRODUCT REVIEWS ===" + ConsoleColors.RESET);
+
+        List<Review> reviews = reviewService.getReviewsForSeller(seller.getUserId());
+
+        if (reviews.isEmpty()) {
+            System.out.println("📭 No reviews found for your products.");
+            System.out.println("\nPress Enter to continue...");
+            scanner.nextLine();
+            return;
+        }
+
+        System.out.println("📊 Total Reviews Found: " + reviews.size());
+        System.out.println();
+
+        int reviewCount = 1;
+        for (Review review : reviews) {
+            System.out.println(ConsoleColors.YELLOW +
+                    "════════════════════════════════════════" + ConsoleColors.RESET);
+            System.out.println("📋 Review #" + reviewCount);
+
+            if (review.getProductName() != null) {
+                System.out.println("🛍️  Product: " + review.getProductName() + " (ID: " + review.getProductId() + ")");
+            } else {
+                System.out.println("🛍️  Product ID: " + review.getProductId());
+            }
+
+            System.out.println("👤 Buyer: " + review.getUsername());
+            System.out.print("⭐ Rating: ");
+
+            // Show stars ★☆☆☆☆
+            for (int i = 1; i <= 5; i++) {
+                if (i <= review.getRating()) {
+                    System.out.print("★");
+                } else {
+                    System.out.print("☆");
+                }
+            }
+            System.out.println(" (" + review.getRating() + "/5)");
+
+            if (review.getComment() != null && !review.getComment().isEmpty()) {
+                System.out.println("💬 Comment: " + review.getComment());
+            } else {
+                System.out.println("💬 Comment: [No comment provided]");
+            }
+
+            if (review.getOrderId() > 0) {
+                System.out.println("📦 Order ID: #" + review.getOrderId());
+            }
+
+            System.out.println("📅 Date: " + review.getCreatedAt());
+            System.out.println(ConsoleColors.YELLOW +
+                    "════════════════════════════════════════" + ConsoleColors.RESET);
+            System.out.println();
+
+            reviewCount++;
+        }
+
+        // Calculate average rating
+        double avgRating = reviews.stream()
+                .mapToInt(Review::getRating)
+                .average()
+                .orElse(0.0);
+
+        System.out.println("📈 Statistics:");
+        System.out.println("   • Average Rating: " + String.format("%.1f", avgRating) + "/5");
+        System.out.println("   • Total Reviews: " + reviews.size());
+
+        // Show rating distribution
+        System.out.println("\n📊 Rating Distribution:");
+        int[] ratingCounts = new int[6]; // 0-5
+        for (Review review : reviews) {
+            ratingCounts[review.getRating()]++;
+        }
+
+        for (int i = 5; i >= 1; i--) {
+            System.out.print("   " + i + "★: ");
+            int count = ratingCounts[i];
+            if (count > 0) {
+                // Simple bar chart
+                int bars = Math.min(count, 20); // Max 20 bars
+                for (int j = 0; j < bars; j++) System.out.print("█");
+                System.out.println(" (" + count + ")");
+            } else {
+                System.out.println(" (" + count + ")");
+            }
+        }
+
+        System.out.println("\nPress Enter to continue...");
+        scanner.nextLine();
     }
 
     private void updateOrderStatus(int orderId) {
