@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FavoriteDAO extends BaseDAO {
 
-    // Add product to favorites
+    // Add the product to favorites
     public boolean addToFavorites(int userId, int productId) throws SQLException {
         String sql = "INSERT INTO favorites (user_id, product_id) VALUES (?, ?)";
         Connection conn = null;
