@@ -13,7 +13,10 @@ import com.revshop.service.OrderService;
 import com.revshop.service.ProductService;
 import com.revshop.service.AuthService;
 import com.revshop.util.ConsoleColors;
-import com.revshop.util.ValidationUtil;
+import com.revshop.service.ReviewService;
+import com.revshop.dao.ReviewDAO;
+
+
 
 import java.util.List;
 import java.util.Scanner;
@@ -334,6 +337,29 @@ public class BuyerMenu {
         System.out.println(ConsoleColors.BLUE_BOLD +
                 "\n=== ADD REVIEW ===" + ConsoleColors.RESET);
 
+        // FIRST: Check if buyer can review this product
+        ReviewService reviewService = new ReviewService();
+        boolean canReview = reviewService.canReviewProduct(userId, productId);
+
+        if (!canReview) {
+            System.out.println(ConsoleColors.RED +
+                    "❌ You can only review products you've purchased and received!\n" +
+                    "   Please check your delivered orders first." + ConsoleColors.RESET);
+
+            // Check why they can't review
+            try {
+                ReviewDAO reviewDAO = new ReviewDAO();
+                // Check if they purchased at all
+                String purchaseSql = "SELECT COUNT(*) FROM order_items oi " +
+                        "JOIN orders o ON oi.order_id = o.order_id " +
+                        "WHERE o.user_id = ? AND oi.product_id = ?";
+                // You'd need to execute this or show more helpful message
+            } catch (Exception e) {
+                // Ignore
+            }
+            return;
+        }
+
         System.out.print("Enter rating (1-5): ");
         int rating = getIntInput();
 
@@ -350,11 +376,18 @@ public class BuyerMenu {
             return;
         }
 
-        boolean success = buyerService.addReview(userId, productId, rating, comment);
+        // Create review object
+        Review review = new Review(productId, userId, rating, comment);
+
+        // Use the validated method
+        boolean success = reviewService.addReviewWithValidation(review, userId);
+
         if (success) {
-            System.out.println(ConsoleColors.GREEN + "Review added successfully!" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.GREEN +
+                    "✅ Review added successfully!" + ConsoleColors.RESET);
         } else {
-            System.out.println(ConsoleColors.RED + "Failed to add review!" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.RED +
+                    "❌ Failed to add review. Please try again." + ConsoleColors.RESET);
         }
     }
 
