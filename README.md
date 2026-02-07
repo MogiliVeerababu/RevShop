@@ -200,4 +200,28 @@ cd revshop
 
 - Run RevShopApplication.java from IntelliJ IDEA.
 
+## 📈 Future Enhancements
+
+- Convert the application into Spring Boot–based RESTful APIs
+
+- Implement JWT-based authentication & authorization
+
+- Develop a Web UI using React or Angular
+
+- Add a comprehensive Admin Dashboard for system monitoring
+
+- Introduce pagination, sorting, and filtering for large datasets
+
+- Integrate real payment gateways (Razorpay / Stripe / PayPal)
+
+- Implement order returns and refund management
+
+- Add caching (Redis) to improve performance
+
+- Enable email & SMS notifications
+
+- Dockerize the application for easy deployment
+
+- Introduce CI/CD pipelines for automated testing and builds
+
 
