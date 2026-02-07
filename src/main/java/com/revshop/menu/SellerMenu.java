@@ -131,8 +131,8 @@ public class SellerMenu {
             System.out.print("Description: ");
             String description = scanner.nextLine().trim();
 
-            double price = ValidationUtil.getPositiveDouble("Price: $");
-            double mrp = ValidationUtil.getPositiveDouble("MRP: $");
+            double price = ValidationUtil.getPositiveDouble("Price: ₹");
+            double mrp = ValidationUtil.getPositiveDouble("MRP: ₹");
 
             System.out.print("Category: ");
             String category = scanner.nextLine().trim();
@@ -182,7 +182,7 @@ public class SellerMenu {
 
     private void displaySellerProducts(List<Product> products) {
         for (Product product : products) {
-            System.out.printf("ID: %d | %s | Price: $%.2f | MRP: $%.2f | Stock: %d | Category: %s%n",
+            System.out.printf("ID: %d | %s | Price: ₹%.2f | MRP: ₹%.2f | Stock: %d | Category: %s%n",
                     product.getProductId(),
                     product.getName(),
                     product.getPrice(),
@@ -209,8 +209,8 @@ public class SellerMenu {
         System.out.println("\nCurrent Details:");
         System.out.println("1. Name: " + product.getName());
         System.out.println("2. Description: " + product.getDescription());
-        System.out.println("3. Price: $" + product.getPrice());
-        System.out.println("4. MRP: $" + product.getMrp());
+        System.out.println("3. Price: ₹" + product.getPrice());
+        System.out.println("4. MRP: ₹" + product.getMrp());
         System.out.println("5. Stock: " + product.getStockQuantity());
         System.out.println("6. Category: " + product.getCategory());
 
@@ -229,10 +229,10 @@ public class SellerMenu {
                 product.setDescription(scanner.nextLine().trim());
                 break;
             case 3:
-                product.setPrice(ValidationUtil.getPositiveDouble("New Price: $"));
+                product.setPrice(ValidationUtil.getPositiveDouble("New Price: ₹"));
                 break;
             case 4:
-                product.setMrp(ValidationUtil.getPositiveDouble("New MRP: $"));
+                product.setMrp(ValidationUtil.getPositiveDouble("New MRP: ₹"));
                 break;
             case 5:
                 product.setStockQuantity(ValidationUtil.getPositiveInt("New Stock Quantity: "));
@@ -293,7 +293,7 @@ public class SellerMenu {
         }
 
         for (Order order : orders) {
-            System.out.printf("Order #%d | Date: %s | Amount: $%.2f | Status: %s%n",
+            System.out.printf("Order #%d | Date: %s | Amount: ₹%.2f | Status: %s%n",
                     order.getOrderId(),
                     order.getCreatedAt(),
                     order.getTotalAmount(),
@@ -321,7 +321,7 @@ public class SellerMenu {
 
         System.out.println("Order ID: " + order.getOrderId());
         System.out.println("Date: " + order.getCreatedAt());
-        System.out.println("Total Amount: $" + String.format("%.2f", order.getTotalAmount()));
+        System.out.println("Total Amount: ₹" + String.format("%.2f", order.getTotalAmount()));
         System.out.println("Status: " + order.getStatus());
         System.out.println("Payment Method: " + order.getPaymentMethod());
         System.out.println("Payment Status: " + order.getPaymentStatus());
@@ -340,7 +340,7 @@ public class SellerMenu {
             System.out.println("No items from your products in this order.");
         } else {
             for (OrderItem item : sellerItems) {
-                System.out.printf("  %s x%d @ $%.2f each = $%.2f%n",
+                System.out.printf("  %s x%d @ ₹%.2f each = ₹%.2f%n",
                         item.getProductName(),
                         item.getQuantity(),
                         item.getPrice(),

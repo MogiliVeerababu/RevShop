@@ -229,8 +229,8 @@ public class BuyerMenu {
             System.out.println("ID: " + product.getProductId());
             System.out.println("Name: " + product.getName());
             System.out.println("Description: " + product.getDescription());
-            System.out.println("Price: $" + String.format("%.2f", product.getPrice()));
-            System.out.println("MRP: $" + String.format("%.2f", product.getMrp()));
+            System.out.println("Price: ₹" + String.format("%.2f", product.getPrice()));
+            System.out.println("MRP: ₹" + String.format("%.2f", product.getMrp()));
             System.out.println("Discount: " + String.format("%.1f", product.getDiscountPercentage()) + "%");
             System.out.println("Stock: " + product.getStockQuantity());
             System.out.println("Category: " + product.getCategory());
@@ -443,7 +443,7 @@ public class BuyerMenu {
         int index = 1;
 
         for (CartItem item : cartItems) {
-            System.out.printf("%d. %s x%d @ $%.2f each = $%.2f%n",
+            System.out.printf("%d. %s x%d @ ₹%.2f each = ₹%.2f%n",
                     index++,
                     item.getProductName(),
                     item.getQuantity(),
@@ -453,7 +453,7 @@ public class BuyerMenu {
         }
 
         System.out.println(ConsoleColors.YELLOW_BOLD +
-                "Total: $" + String.format("%.2f", total) + ConsoleColors.RESET);
+                "Total: ₹" + String.format("%.2f", total) + ConsoleColors.RESET);
     }
 
     private void checkout(Buyer buyer, List<CartItem> cartItems) {
@@ -461,7 +461,7 @@ public class BuyerMenu {
                 "\n=== CHECKOUT ===" + ConsoleColors.RESET);
 
         double total = cartService.getCartTotal(buyer.getUserId());
-        System.out.println("Total Amount: $" + String.format("%.2f", total));
+        System.out.println("Total Amount: ₹" + String.format("%.2f", total));
 
         System.out.print("Enter shipping address: ");
         String address = scanner.nextLine().trim();
@@ -586,7 +586,7 @@ public class BuyerMenu {
         }
 
         for (Order order : orders) {
-            System.out.printf("Order #%d | Date: %s | Amount: $%.2f | Status: %s | Payment: %s%n",
+            System.out.printf("Order #%d | Date: %s | Amount: ₹%.2f | Status: %s | Payment: %s%n",
                     order.getOrderId(),
                     order.getCreatedAt(),
                     order.getTotalAmount(),
@@ -615,7 +615,7 @@ public class BuyerMenu {
 
         System.out.println("Order ID: " + order.getOrderId());
         System.out.println("Date: " + order.getCreatedAt());
-        System.out.println("Total Amount: $" + String.format("%.2f", order.getTotalAmount()));
+        System.out.println("Total Amount: ₹" + String.format("%.2f", order.getTotalAmount()));
         System.out.println("Status: " + order.getStatus());
         System.out.println("Payment Method: " + order.getPaymentMethod());
         System.out.println("Payment Status: " + order.getPaymentStatus());
@@ -624,7 +624,7 @@ public class BuyerMenu {
         System.out.println("\nOrder Items:");
         List<OrderItem> items = orderService.getOrderItems(orderId);
         for (OrderItem item : items) {
-            System.out.printf("  %s x%d @ $%.2f each = $%.2f%n",
+            System.out.printf("  %s x%d @ ₹%.2f each = ₹%.2f%n",
                     item.getProductName(),
                     item.getQuantity(),
                     item.getPrice(),
@@ -802,7 +802,7 @@ public class BuyerMenu {
     private void displayProducts(List<Product> products) {
         System.out.println("\nAvailable Products:");
         for (Product product : products) {
-            System.out.printf("ID: %d | %s | $%.2f | Stock: %d | Category: %s%n",
+            System.out.printf("ID: %d | %s | ₹%.2f | Stock: %d | Category: %s%n",
                     product.getProductId(),
                     product.getName(),
                     product.getPrice(),
@@ -867,8 +867,8 @@ public class BuyerMenu {
             System.out.println("ID: " + product.getProductId());
             System.out.println("Name: " + product.getName());
             System.out.println("Description: " + product.getDescription());
-            System.out.println("Price: $" + String.format("%.2f", product.getPrice()));
-            System.out.println("MRP: $" + String.format("%.2f", product.getMrp()));
+            System.out.println("Price: ₹" + String.format("%.2f", product.getPrice()));
+            System.out.println("MRP: ₹" + String.format("%.2f", product.getMrp()));
             System.out.println("Discount: " + String.format("%.1f", product.getDiscountPercentage()) + "%");
             System.out.println("Stock: " + product.getStockQuantity());
             System.out.println("Category: " + product.getCategory());
@@ -881,7 +881,7 @@ public class BuyerMenu {
             System.out.println("2. View Reviews");
             System.out.println("3. Add Review");
             System.out.println("4. Remove from Favorites");
-            System.out.println("5. Back to Favorites List");
+            System.out.println("5. Back");
             System.out.print("Choose: ");
 
             int choice = getIntInput();
