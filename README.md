@@ -116,10 +116,34 @@ This project demonstrates **real-world backend design** using **Core Java, JDBC,
 ---
 
 ## 📊 Database Design
-- Fully normalized (3NF)
-- Strong referential integrity using foreign keys
-- Central **Users** table with Buyer & Seller extensions
-- Separate tables for carts, orders, reviews, favorites, and notifications
+
+- Designed using relational database principles with 3rd Normal Form (3NF)
+
+- Central Users table supporting Buyer and Seller roles
+
+- Strong referential integrity enforced using foreign keys
+
+- Separate tables for:
+
+- Products & Categories
+
+- Cart & Cart Items
+
+- Orders & Order Items
+
+-  & Ratings
+
+- Favorites (Wishlist)
+
+- Notifications
+
+- One-to-many and many-to-one relationships used where appropriate
+
+- Indexes applied on frequently queried columns (user_id, product_id, order_id)
+
+- Uses PreparedStatements to ensure secure and efficient database access
+
+- Designed for scalability and future microservices migration
 
 ### 📄 Documentation
 - docs/

@@ -5,10 +5,11 @@ import com.revshop.util.ConsoleColors;
 
 public class MainApplication {
     public static void main(String[] args) {
-        System.out.println(ConsoleColors.CYAN_BOLD +
-                "==========================================");
-        System.out.println("      Welcome to RevShop E-Commerce");
-        System.out.println("==========================================" +
+        System.out.println(ConsoleColors.PURPLE_BOLD+
+                "╔══════════════════════════════════════════════════════════╗");
+        System.out.println("║              Welcome to RevShop                          ║");
+        System.out.println("║              E-Commerce Platform                         ║");
+        System.out.println("╚══════════════════════════════════════════════════════════╝" +
                 ConsoleColors.RESET);
 
         try {
