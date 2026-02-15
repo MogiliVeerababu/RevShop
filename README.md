@@ -458,7 +458,7 @@ ___
 - Mobile App: React Native mobile application
 - Advanced Analytics: Business intelligence dashboard
 - Inventory Optimization: AI-based stock prediction
-- Multi-vendor Support: Marketplace functionality
+- Support: Marketplace functionality
 
 # Long-term Vision (1-2 Years)
 

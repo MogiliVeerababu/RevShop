@@ -6,7 +6,6 @@ import com.revshop.dao.NotificationDAO;
 import com.revshop.model.CartItem;
 import com.revshop.model.Order;
 import com.revshop.model.OrderItem;
-import com.revshop.util.PaymentSimulator;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class OrderService {
         notificationDAO = new NotificationDAO();
     }
 
-    // Create order from cart items
+    // OPTION 1: Use existing createOrder method with Order object
     public int createOrder(int userId, List<CartItem> cartItems, String shippingAddress, String paymentMethod) {
         try {
             // Calculate total amount
@@ -30,25 +29,19 @@ public class OrderService {
                 totalAmount += item.getTotalPrice();
             }
 
-            // Create order
+            // Create order with confirmed/completed status (payment already done)
             Order order = new Order();
             order.setUserId(userId);
             order.setTotalAmount(totalAmount);
-            order.setStatus("pending");
+            order.setStatus("confirmed"); // Already confirmed since payment is done
             order.setShippingAddress(shippingAddress);
             order.setPaymentMethod(paymentMethod);
-            order.setPaymentStatus("pending");
-
-            // Process payment
-            boolean paymentSuccess = PaymentSimulator.processPayment(totalAmount, paymentMethod);
-            if (!paymentSuccess) {
-                order.setPaymentStatus("failed");
-                return -1;
-            }
+            order.setPaymentStatus("completed"); // Payment already completed
 
             // Save order
             int orderId = orderDAO.createOrder(order);
             if (orderId == -1) {
+                System.err.println("Failed to create order in database");
                 return -1;
             }
 
@@ -66,9 +59,53 @@ public class OrderService {
                 productDAO.updateStockQuantity(cartItem.getProductId(), -cartItem.getQuantity());
             }
 
-            // Update order status
-            orderDAO.updateOrderStatus(orderId, "confirmed");
-            orderDAO.updatePaymentStatus(orderId, "completed");
+            // Send notification
+            notificationDAO.addNotification(
+                    new com.revshop.model.Notification(
+                            userId,
+                            "order_placed",
+                            "Your order #" + orderId + " has been placed successfully!"
+                    )
+            );
+
+            return orderId;
+        } catch (SQLException e) {
+            System.err.println("Error creating order: " + e.getMessage());
+            return -1;
+        }
+    }
+
+    // OPTION 2: Use new direct method (more efficient)
+    public int createOrderDirect(int userId, List<CartItem> cartItems, String shippingAddress, String paymentMethod) {
+        try {
+            // Calculate total amount
+            double totalAmount = 0;
+            for (CartItem item : cartItems) {
+                totalAmount += item.getTotalPrice();
+            }
+
+            // Payment already processed in BuyerMenu, so create order directly with confirmed status
+            int orderId = orderDAO.createOrderDirect(userId, totalAmount, shippingAddress,
+                    paymentMethod, "confirmed", "completed");
+
+            if (orderId == -1) {
+                System.err.println("Failed to create order in database");
+                return -1;
+            }
+
+            // Save order items and update stock
+            for (CartItem cartItem : cartItems) {
+                OrderItem orderItem = new OrderItem();
+                orderItem.setOrderId(orderId);
+                orderItem.setProductId(cartItem.getProductId());
+                orderItem.setQuantity(cartItem.getQuantity());
+                orderItem.setPrice(cartItem.getProductPrice());
+
+                orderDAO.addOrderItem(orderItem);
+
+                // Update product stock
+                productDAO.updateStockQuantity(cartItem.getProductId(), -cartItem.getQuantity());
+            }
 
             // Send notification
             notificationDAO.addNotification(
@@ -155,6 +192,26 @@ public class OrderService {
         } catch (SQLException e) {
             System.err.println("Error getting seller orders: " + e.getMessage());
             return List.of();
+        }
+    }
+
+    // Get total sales for seller
+    public double getTotalSalesBySeller(int sellerId) {
+        try {
+            return orderDAO.getTotalSalesBySeller(sellerId);
+        } catch (SQLException e) {
+            System.err.println("Error getting total sales: " + e.getMessage());
+            return 0.0;
+        }
+    }
+
+    // Get pending orders count for seller
+    public int getPendingOrdersCount(int sellerId) {
+        try {
+            return orderDAO.getPendingOrdersCount(sellerId);
+        } catch (SQLException e) {
+            System.err.println("Error getting pending orders count: " + e.getMessage());
+            return 0;
         }
     }
 

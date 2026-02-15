@@ -8,7 +8,7 @@ import java.util.List;
 
 public class OrderDAO extends BaseDAO {
 
-    // Create new order
+    // Create new order (MODIFIED: Accepts Order object with pre-set statuses)
     public int createOrder(Order order) throws SQLException {
         String sql = "INSERT INTO orders (user_id, total_amount, status, shipping_address, " +
                 "payment_method, payment_status) VALUES (?, ?, ?, ?, ?, ?)";
@@ -21,10 +21,43 @@ public class OrderDAO extends BaseDAO {
             stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             stmt.setInt(1, order.getUserId());
             stmt.setDouble(2, order.getTotalAmount());
-            stmt.setString(3, order.getStatus());
+            stmt.setString(3, order.getStatus());           // Now will be "confirmed"
             stmt.setString(4, order.getShippingAddress());
             stmt.setString(5, order.getPaymentMethod());
-            stmt.setString(6, order.getPaymentStatus());
+            stmt.setString(6, order.getPaymentStatus());    // Now will be "completed"
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    return rs.getInt(1); // Return generated order ID
+                }
+            }
+            return -1;
+        } finally {
+            closeResources(conn, stmt, rs);
+        }
+    }
+
+    // NEW METHOD: Create order with specific status (for direct creation)
+    public int createOrderDirect(int userId, double totalAmount, String shippingAddress,
+                                 String paymentMethod, String status, String paymentStatus) throws SQLException {
+        String sql = "INSERT INTO orders (user_id, total_amount, status, shipping_address, " +
+                "payment_method, payment_status) VALUES (?, ?, ?, ?, ?, ?)";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt.setInt(1, userId);
+            stmt.setDouble(2, totalAmount);
+            stmt.setString(3, status);           // e.g., "confirmed"
+            stmt.setString(4, shippingAddress);
+            stmt.setString(5, paymentMethod);
+            stmt.setString(6, paymentStatus);    // e.g., "completed"
 
             int affectedRows = stmt.executeUpdate();
 
@@ -142,7 +175,7 @@ public class OrderDAO extends BaseDAO {
 
     // Cancel order
     public boolean cancelOrder(int orderId) throws SQLException {
-        String sql = "UPDATE orders SET status = 'cancelled' WHERE order_id = ? AND status = 'pending'";
+        String sql = "UPDATE orders SET status = 'cancelled' WHERE order_id = ? AND status IN ('pending', 'confirmed')";
         return executeUpdate(sql, orderId) > 0;
     }
 
@@ -167,6 +200,56 @@ public class OrderDAO extends BaseDAO {
                 orders.add(extractOrderFromResultSet(rs));
             }
             return orders;
+        } finally {
+            closeResources(conn, stmt, rs);
+        }
+    }
+
+    // Get total sales for seller
+    public double getTotalSalesBySeller(int sellerId) throws SQLException {
+        String sql = "SELECT SUM(o.total_amount) as total_sales FROM orders o " +
+                "JOIN order_items oi ON o.order_id = oi.order_id " +
+                "JOIN products p ON oi.product_id = p.product_id " +
+                "WHERE p.seller_id = ? AND o.payment_status = 'completed'";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, sellerId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getDouble("total_sales");
+            }
+            return 0.0;
+        } finally {
+            closeResources(conn, stmt, rs);
+        }
+    }
+
+    // Get pending orders count for seller
+    public int getPendingOrdersCount(int sellerId) throws SQLException {
+        String sql = "SELECT COUNT(DISTINCT o.order_id) as pending_count FROM orders o " +
+                "JOIN order_items oi ON o.order_id = oi.order_id " +
+                "JOIN products p ON oi.product_id = p.product_id " +
+                "WHERE p.seller_id = ? AND o.status = 'pending'";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, sellerId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("pending_count");
+            }
+            return 0;
         } finally {
             closeResources(conn, stmt, rs);
         }

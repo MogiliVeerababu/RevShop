@@ -16,8 +16,6 @@ import com.revshop.util.ConsoleColors;
 import com.revshop.service.ReviewService;
 import com.revshop.dao.ReviewDAO;
 
-
-
 import java.util.List;
 import java.util.Scanner;
 
@@ -56,11 +54,11 @@ public class BuyerMenu {
             System.out.println("2. Search Products");
             System.out.println("3. View Cart");
             System.out.println("4. View Orders");
-            System.out.println("5. View Favorites");  // NEW OPTION
-            System.out.println("6. View Notifications");  // Renumbered from 5
-            System.out.println("7. View Profile");  // Renumbered from 6
-            System.out.println("8. Change Password");  // Renumbered from 7
-            System.out.println("9. Logout");  // Renumbered from 8
+            System.out.println("5. View Favorites");
+            System.out.println("6. View Notifications");
+            System.out.println("7. View Profile");
+            System.out.println("8. Change Password");
+            System.out.println("9. Logout");
 
             System.out.print("Choose an option: " + ConsoleColors.RESET);
 
@@ -79,19 +77,19 @@ public class BuyerMenu {
                 case 4:
                     viewOrders(buyer);
                     break;
-                case 5:  // NEW CASE FOR FAVORITES
+                case 5:
                     viewFavorites(buyer);
                     break;
-                case 6:  // Renumbered from 5
+                case 6:
                     viewNotifications(buyer);
                     break;
-                case 7:  // Renumbered from 6
+                case 7:
                     viewProfile(buyer);
                     break;
-                case 8:  // Renumbered from 7
+                case 8:
                     changePassword(buyer);
                     break;
-                case 9:  // Renumbered from 8
+                case 9:
                     System.out.println(ConsoleColors.YELLOW +
                             "Logging out..." + ConsoleColors.RESET);
                     return;
@@ -489,6 +487,15 @@ public class BuyerMenu {
             return;
         }
 
+        // Process payment
+        boolean paymentSuccessful = processPayment(paymentMethod, total);
+
+        if (!paymentSuccessful) {
+            System.out.println(ConsoleColors.RED + "Payment failed! Order cancelled." + ConsoleColors.RESET);
+            return;
+        }
+
+        // Create order (payment already successful)
         try {
             int orderId = orderService.createOrder(buyer.getUserId(), cartItems, address, paymentMethod);
             if (orderId > 0) {
@@ -503,6 +510,190 @@ public class BuyerMenu {
             System.out.println(ConsoleColors.RED +
                     "Error during checkout: " + e.getMessage() + ConsoleColors.RESET);
         }
+    }
+
+    // Payment processing method
+    private boolean processPayment(String paymentMethod, double amount) {
+        System.out.println("\n=== PAYMENT DETAILS ===");
+
+        switch (paymentMethod) {
+            case "Credit Card":
+            case "Debit Card":
+                return processCardPayment(paymentMethod, amount);
+
+            case "PayPal":
+                return processPayPalPayment(amount);
+
+            default:
+                return false;
+        }
+    }
+
+    // Card payment processing (for BOTH Credit & Debit Cards)
+    private boolean processCardPayment(String cardType, double amount) {
+        System.out.println("\nEnter Card Details for " + cardType + ":");
+
+        System.out.print("Card Number (16 digits): ");
+        String cardNumber = scanner.nextLine().trim();
+
+        if (!isValidCardNumber(cardNumber)) {
+            System.out.println(ConsoleColors.RED + "Invalid card number!" + ConsoleColors.RESET);
+            return false;
+        }
+
+        System.out.print("Cardholder Name: ");
+        String cardholderName = scanner.nextLine().trim();
+
+        if (cardholderName.isEmpty()) {
+            System.out.println(ConsoleColors.RED + "Cardholder name is required!" + ConsoleColors.RESET);
+            return false;
+        }
+
+        System.out.print("Expiry Date (MM/YY): ");
+        String expiryDate = scanner.nextLine().trim();
+
+        if (!isValidExpiryDate(expiryDate)) {
+            System.out.println(ConsoleColors.RED + "Invalid expiry date!" + ConsoleColors.RESET);
+            return false;
+        }
+
+        System.out.print("CVV (3 digits): ");
+        String cvv = scanner.nextLine().trim();
+
+        if (!isValidCVV(cvv)) {
+            System.out.println(ConsoleColors.RED + "Invalid CVV!" + ConsoleColors.RESET);
+            return false;
+        }
+
+        // OTP VALIDATION FOR CREDIT/DEBIT CARDS
+        System.out.println("\n--- OTP Verification ---");
+
+        String otp;
+        while (true) {
+            System.out.print("Enter OTP (4, 5, or 6 digits): ");
+            otp = scanner.nextLine().trim();
+
+            // Check if it's 4, 5, or 6 digits
+            if (otp.matches("\\d{4}") || otp.matches("\\d{5}") || otp.matches("\\d{6}")) {
+                // Valid OTP
+                break;
+            } else {
+                System.out.println(ConsoleColors.RED + "❌ Invalid! Enter 4, 5, or 6 digits only." + ConsoleColors.RESET);
+                System.out.println("Valid examples: 4567 (4-digit), 56789 (5-digit), 754422 (6-digit)");
+            }
+        }
+
+        System.out.println(ConsoleColors.GREEN + "✓ OTP " + otp + " (" + otp.length() + " digits) verified!" + ConsoleColors.RESET);
+
+        // Simulate payment processing
+        System.out.print("\nProcessing payment of ₹" + String.format("%.2f", amount) + "... ");
+
+        // Simulate a small delay
+        try {
+            for (int i = 0; i < 3; i++) {
+                System.out.print(".");
+                Thread.sleep(500);
+            }
+            System.out.println();
+        } catch (InterruptedException e) {
+            // Ignore
+        }
+
+        // Simulate successful payment
+        System.out.println(ConsoleColors.GREEN + "✓ PAYMENT SUCCESSFUL!" + ConsoleColors.RESET);
+
+        // Mask card number for security
+        String maskedCard = "****-****-****-" + cardNumber.substring(cardNumber.length() - 4);
+        System.out.println("Card: " + maskedCard);
+        System.out.println("Amount: ₹" + String.format("%.2f", amount));
+        System.out.println("Transaction ID: TXN" + System.currentTimeMillis());
+        System.out.println("Payment Method: " + cardType);
+
+        return true;
+    }
+
+    // PayPal payment processing with OTP
+    private boolean processPayPalPayment(double amount) {
+        System.out.println("\n=== PAYPAL PAYMENT ===");
+
+        System.out.print("PayPal Email: ");
+        String paypalEmail = scanner.nextLine().trim();
+
+        if (!isValidEmail(paypalEmail)) {
+            System.out.println(ConsoleColors.RED + "Invalid email address!" + ConsoleColors.RESET);
+            return false;
+        }
+
+        System.out.print("PayPal Password: ");
+        String password = scanner.nextLine().trim();
+
+        // OTP VALIDATION FOR PAYPAL
+        System.out.println("\n--- OTP Verification ---");
+
+        String otp;
+        while (true) {
+            System.out.print("Enter OTP (4, 5, or 6 digits): ");
+            otp = scanner.nextLine().trim();
+
+            // Check if it's 4, 5, or 6 digits
+            if (otp.matches("\\d{4}") || otp.matches("\\d{5}") || otp.matches("\\d{6}")) {
+                // Valid OTP
+                break;
+            } else {
+                System.out.println(ConsoleColors.RED + "❌ Invalid! Enter 4, 5, or 6 digits only." + ConsoleColors.RESET);
+                System.out.println("Valid examples: 4567 (4-digit), 56789 (5-digit), 754422 (6-digit)");
+            }
+        }
+
+        System.out.println(ConsoleColors.GREEN + "✓ OTP " + otp + " (" + otp.length() + " digits) verified!" + ConsoleColors.RESET);
+
+        // Simulate processing delay
+        System.out.print("\nProcessing PayPal payment... ");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // Ignore
+        }
+
+        System.out.println(ConsoleColors.GREEN + "✓ PAYMENT COMPLETED!" + ConsoleColors.RESET);
+        System.out.println("Amount: ₹" + String.format("%.2f", amount));
+        System.out.println("PayPal Account: " + paypalEmail);
+        System.out.println("Transaction ID: PPL" + System.currentTimeMillis());
+
+        return true;
+    }
+
+    // Validation methods
+    private boolean isValidCardNumber(String cardNumber) {
+        // Basic validation - 16 digits, spaces/dashes allowed
+        String cleaned = cardNumber.replaceAll("[\\s-]", "");
+        return cleaned.matches("\\d{16}");
+    }
+
+    private boolean isValidExpiryDate(String expiryDate) {
+        // Format: MM/YY
+        if (!expiryDate.matches("\\d{2}/\\d{2}")) {
+            return false;
+        }
+
+        try {
+            int month = Integer.parseInt(expiryDate.substring(0, 2));
+            int year = Integer.parseInt(expiryDate.substring(3));
+
+            // Basic validation
+            return month >= 1 && month <= 12 && year >= 23; // Assuming current year is 2023+
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private boolean isValidCVV(String cvv) {
+        return cvv.matches("\\d{3}");
+    }
+
+    private boolean isValidEmail(String email) {
+        // Basic email validation
+        return email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
     }
 
     private String getPaymentMethod(int choice) {
@@ -820,6 +1011,7 @@ public class BuyerMenu {
             }
         }
     }
+
     // ============ FAVORITE METHODS ============ //
 
     private void viewFavorites(Buyer buyer) {
